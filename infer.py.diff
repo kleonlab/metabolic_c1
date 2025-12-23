@@ -1,0 +1,159 @@
+diff --git a/src/state/_cli/_tx/_infer.py b/src/state/_cli/_tx/_infer.py
+index a4f05d0..d14bd1f 100644
+--- a/src/state/_cli/_tx/_infer.py
++++ b/src/state/_cli/_tx/_infer.py
+@@ -82,6 +82,11 @@ def add_arguments_infer(parser: argparse.ArgumentParser):
+         default=None,
+         help="Path to TSV file with columns 'perturbation' and 'num_cells' to pad the adata with additional perturbation cells copied from random controls.",
+     )
++    parser.add_argument(
++        "--overwrite",
++        action="store_true",
++        help="When set, overwrite the corresponding gene entries in adata.X with model predictions (only works when --embed-key is X_hvg).",
++    )
+ 
+ 
+ def run_tx_infer(args: argparse.Namespace):
+@@ -308,6 +313,32 @@ def run_tx_infer(args: argparse.Namespace):
+     if not args.quiet:
+         print(f"Loaded config: {config_path}")
+ 
++    # Load gene names from hparams.yaml if using X_hvg
++    hvg_gene_names = None
++    if args.embed_key == "X_hvg":
++        # Try multiple possible locations for hparams.yaml
++        possible_hparams_paths = [
++            os.path.join(args.model_dir, "hparams.yaml"),
++            os.path.join(args.model_dir, "version_0", "hparams.yaml"),
++        ]
++        
++        hparams_path = None
++        for path in possible_hparams_paths:
++            if os.path.exists(path):
++                hparams_path = path
++                break
++        
++        if hparams_path is not None:
++            hparams = load_config(hparams_path)
++            if "gene_names" in hparams:
++                hvg_gene_names = hparams["gene_names"]
++                if not args.quiet:
++                    print(f"Loaded {len(hvg_gene_names)} HVG gene names from {hparams_path}")
++            else:
++                warnings.warn(f"gene_names not found in {hparams_path}")
++        else:
++            warnings.warn(f"hparams.yaml not found in {args.model_dir} or {args.model_dir}/version_0")
++
+     # control_pert
+     control_pert = args.control_pert
+     if control_pert is None:
+@@ -423,7 +454,41 @@ def run_tx_infer(args: argparse.Namespace):
+         if not args.quiet:
+             print(f"Filtered to {adata.n_obs} cells (from {n0}) for cell types: {keep_cts}")
+ 
++    # Create X_hvg if it doesn't exist and we have gene names
++    if args.embed_key == "X_hvg" and "X_hvg" not in adata.obsm and hvg_gene_names is not None:
++        if not args.quiet:
++            print(f"Creating X_hvg from adata.X using {len(hvg_gene_names)} HVG gene names...")
++        
++        # Find indices of HVG genes in adata.var
++        if not hasattr(adata.var, 'index'):
++            raise ValueError("adata.var does not have an index (gene names)")
++        
++        gene_names_in_data = adata.var.index.tolist()
++        hvg_indices = []
++        missing_genes = []
++        
++        for gene in hvg_gene_names:
++            if gene in gene_names_in_data:
++                hvg_indices.append(gene_names_in_data.index(gene))
++            else:
++                missing_genes.append(gene)
++        
++        if len(missing_genes) > 0:
++            if not args.quiet:
++                print(f"Warning: {len(missing_genes)} HVG genes not found in adata.var (e.g., {missing_genes[:5]})")
++        
++        if len(hvg_indices) == 0:
++            raise ValueError("No HVG genes found in adata.var. Cannot create X_hvg.")
++        
++        # Create X_hvg by selecting columns
++        X_dense = to_dense(adata.X)
++        adata.obsm["X_hvg"] = X_dense[:, hvg_indices]
++        
++        if not args.quiet:
++            print(f"Created X_hvg with shape {adata.obsm['X_hvg'].shape} ({len(hvg_indices)} genes found)")
++
+     # select features: embeddings or genes
++    hvg_indices_for_overwrite = None
+     if args.embed_key is None:
+         X_in = to_dense(adata.X)  # [N, E_in]
+         writes_to = (".X", None)  # write predictions to .X
+@@ -432,6 +497,23 @@ def run_tx_infer(args: argparse.Namespace):
+             raise KeyError(f"Embedding key '{args.embed_key}' not found in adata.obsm")
+         X_in = np.asarray(adata.obsm[args.embed_key])  # [N, E_in]
+         writes_to = (".obsm", args.embed_key)  # write predictions to obsm[embed_key]
++        
++        # If --overwrite is set, we need to write predictions back to adata.X at the HVG gene positions
++        if args.overwrite and args.embed_key == "X_hvg" and hvg_gene_names is not None:
++            gene_names_in_data = adata.var.index.tolist()
++            hvg_indices_for_overwrite = []
++            for gene in hvg_gene_names:
++                if gene in gene_names_in_data:
++                    hvg_indices_for_overwrite.append(gene_names_in_data.index(gene))
++            
++            if len(hvg_indices_for_overwrite) != len(hvg_gene_names):
++                warnings.warn(
++                    f"Only {len(hvg_indices_for_overwrite)}/{len(hvg_gene_names)} HVG genes found for overwrite. "
++                    "Some predictions may not be written to adata.X."
++                )
++            
++            if not args.quiet:
++                print(f"--overwrite mode: Will write {len(hvg_indices_for_overwrite)} predictions back to adata.X")
+ 
+     if not args.quiet:
+         print(
+@@ -505,6 +587,11 @@ def run_tx_infer(args: argparse.Namespace):
+     else:
+         sim_obsm = X_in.copy()
+         out_target = f"obsm['{writes_to[1]}']"
++    
++    # If overwrite mode, also prepare to write to adata.X
++    if hvg_indices_for_overwrite is not None:
++        sim_X_overwrite = to_dense(adata.X).copy()
++        out_target = "X (overwritten at HVG positions)"
+ 
+     # Group labels for set-to-set behavior
+     if args.celltype_col and args.celltype_col in adata.obs:
+@@ -644,13 +731,30 @@ def run_tx_infer(args: argparse.Namespace):
+                                 adata.obsm[side_key] = np.zeros((n_total, preds.shape[1]), dtype=np.float32)
+                             adata.obsm[side_key][idx_window, :] = preds
+                             out_target = f"obsm['{side_key}']"
++                    
++                    # If overwrite mode, also write to adata.X at HVG positions
++                    if hvg_indices_for_overwrite is not None:
++                        if preds.shape[1] == len(hvg_indices_for_overwrite):
++                            # Write predictions to the HVG gene columns in X
++                            for i, gene_idx in enumerate(hvg_indices_for_overwrite):
++                                sim_X_overwrite[idx_window, gene_idx] = preds[:, i]
++                        else:
++                            warnings.warn(
++                                f"Cannot overwrite: prediction shape {preds.shape[1]} doesn't match "
++                                f"number of HVG indices {len(hvg_indices_for_overwrite)}"
++                            )
+ 
+                     start = end  # next window
+ 
+     # -----------------------
+     # 5) Persist the updated AnnData
+     # -----------------------
+-    if writes_to[0] == ".X":
++    if hvg_indices_for_overwrite is not None:
++        # Overwrite mode: write sim_X_overwrite to adata.X
++        adata.X = sim_X_overwrite
++        # Also keep the predictions in obsm for reference
++        adata.obsm[writes_to[1]] = sim_obsm
++    elif writes_to[0] == ".X":
+         if out_target == "X":
+             adata.X = sim_X
+     else:

@@ -6,6 +6,16 @@ __pycache__/
 # C extensions
 *.so
 
+# custom
+datasets/
+experiments/
+wandb/
+wandb_logs/
+ST-Tahoe/
+outputs/
+cell-eval-outdir/
+slurm_out
+
 # Distribution / packaging
 .Python
 build/

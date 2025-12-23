@@ -1,0 +1,64 @@
+Loading data from: datasets/competition_support_set/competition_train.h5
+
+============================================================
+BASIC INFORMATION
+============================================================
+Shape: (221273, 18080) (n_obs × n_vars)
+Observations: 221273
+Variables: 18080
+Is log-normalized: True
+
+============================================================
+MAIN DATA MATRIX (X)
+============================================================
+Type: csr_matrix
+Shape: (221273, 18080)
+Dtype: float32
+
+============================================================
+OBSERVATIONS ANNOTATIONS (.obs)
+============================================================
+Number of columns: 5
+  target_gene: category (151 unique values)
+    → Non-targeting cells: 38176 (17.25%)
+  guide_id: category (189 unique values)
+  batch: category (48 unique values)
+  batch_var: category (48 unique values)
+  cell_type: category (1 unique values)
+
+============================================================
+VARIABLES ANNOTATIONS (.var)
+============================================================
+No variable annotations
+
+============================================================
+UNSTRUCTURED ANNOTATIONS (.uns)
+============================================================
+Number of keys: 1
+  log1p: dict with 0 keys
+
+============================================================
+OBSERVATIONS MULTI-DIMENSIONAL (.obsm)
+============================================================
+No multi-dimensional observation annotations
+
+============================================================
+VARIABLES MULTI-DIMENSIONAL (.varm)
+============================================================
+No multi-dimensional variable annotations
+
+============================================================
+LAYERS (.layers)
+============================================================
+No layers
+
+============================================================
+OBSERVATIONS PAIRWISE (.obsp)
+============================================================
+No pairwise observation annotations
+
+============================================================
+VARIABLES PAIRWISE (.varp)
+============================================================
+No pairwise variable annotations
+

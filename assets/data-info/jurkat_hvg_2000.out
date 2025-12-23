@@ -1,0 +1,77 @@
+Loading data from: datasets/competition_support_set/jurkat_hvg_2000.h5ad
+
+============================================================
+BASIC INFORMATION
+============================================================
+Shape: (21412, 18080) (n_obs × n_vars)
+Observations: 21412
+Variables: 18080
+Is log-normalized: True
+
+============================================================
+MAIN DATA MATRIX (X)
+============================================================
+Type: ndarray
+Shape: (21412, 18080)
+Dtype: float32
+
+============================================================
+OBSERVATIONS ANNOTATIONS (.obs)
+============================================================
+Number of columns: 12
+  gem_group: int64 (55 unique values)
+  gene: category (69 unique values)
+  gene_id: category (69 unique values)
+  transcript: category (4 unique values)
+  gene_transcript: category (201 unique values)
+  sgID_AB: category (201 unique values)
+  mitopercent: float32 (21245 unique values)
+  UMI_count: float32 (12550 unique values)
+  z_gemgroup_UMI: float32 (21080 unique values)
+  batch_var: category (55 unique values)
+  target_gene: category (69 unique values)
+    → Non-targeting cells: 12013 (56.10%)
+  cell_type: category (1 unique values)
+
+============================================================
+VARIABLES ANNOTATIONS (.var)
+============================================================
+Number of columns: 4
+  highly_variable: bool (2 unique values)
+  means: float64 (8183 unique values)
+  dispersions: float64 (8182 unique values)
+  dispersions_norm: float32 (8181 unique values)
+
+============================================================
+UNSTRUCTURED ANNOTATIONS (.uns)
+============================================================
+Number of keys: 2
+  hvg: dict with 1 keys
+  log1p: dict with 0 keys
+
+============================================================
+OBSERVATIONS MULTI-DIMENSIONAL (.obsm)
+============================================================
+Number of keys: 1
+  X_hvg: ndarray with shape (21412, 2000)
+
+============================================================
+VARIABLES MULTI-DIMENSIONAL (.varm)
+============================================================
+No multi-dimensional variable annotations
+
+============================================================
+LAYERS (.layers)
+============================================================
+No layers
+
+============================================================
+OBSERVATIONS PAIRWISE (.obsp)
+============================================================
+No pairwise observation annotations
+
+============================================================
+VARIABLES PAIRWISE (.varp)
+============================================================
+No pairwise variable annotations
+

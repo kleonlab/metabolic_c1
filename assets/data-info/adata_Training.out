@@ -1,0 +1,62 @@
+Loading data from: datasets/vcc_data/adata_Training.h5ad
+
+============================================================
+BASIC INFORMATION
+============================================================
+Shape: (221273, 18080) (n_obs × n_vars)
+Observations: 221273
+Variables: 18080
+Is log-normalized: False
+
+============================================================
+MAIN DATA MATRIX (X)
+============================================================
+Type: csr_matrix
+Shape: (221273, 18080)
+Dtype: float32
+
+============================================================
+OBSERVATIONS ANNOTATIONS (.obs)
+============================================================
+Number of columns: 3
+  target_gene: category (151 unique values)
+    → Non-targeting cells: 38176 (17.25%)
+  guide_id: category (189 unique values)
+  batch: category (48 unique values)
+
+============================================================
+VARIABLES ANNOTATIONS (.var)
+============================================================
+Number of columns: 1
+  gene_id: object (18080 unique values)
+
+============================================================
+UNSTRUCTURED ANNOTATIONS (.uns)
+============================================================
+No unstructured annotations
+
+============================================================
+OBSERVATIONS MULTI-DIMENSIONAL (.obsm)
+============================================================
+No multi-dimensional observation annotations
+
+============================================================
+VARIABLES MULTI-DIMENSIONAL (.varm)
+============================================================
+No multi-dimensional variable annotations
+
+============================================================
+LAYERS (.layers)
+============================================================
+No layers
+
+============================================================
+OBSERVATIONS PAIRWISE (.obsp)
+============================================================
+No pairwise observation annotations
+
+============================================================
+VARIABLES PAIRWISE (.varp)
+============================================================
+No pairwise variable annotations
+

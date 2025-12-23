@@ -1,0 +1,59 @@
+Loading data from: datasets/baseline/baseline.h5ad
+
+============================================================
+BASIC INFORMATION
+============================================================
+Shape: (98927, 18080) (n_obs × n_vars)
+Observations: 98927
+Variables: 18080
+Is log-normalized: True
+
+============================================================
+MAIN DATA MATRIX (X)
+============================================================
+Type: ndarray
+Shape: (98927, 18080)
+Dtype: float32
+
+============================================================
+OBSERVATIONS ANNOTATIONS (.obs)
+============================================================
+Number of columns: 1
+  target_gene: category (51 unique values)
+    → Non-targeting cells: 38176 (38.59%)
+
+============================================================
+VARIABLES ANNOTATIONS (.var)
+============================================================
+No variable annotations
+
+============================================================
+UNSTRUCTURED ANNOTATIONS (.uns)
+============================================================
+No unstructured annotations
+
+============================================================
+OBSERVATIONS MULTI-DIMENSIONAL (.obsm)
+============================================================
+No multi-dimensional observation annotations
+
+============================================================
+VARIABLES MULTI-DIMENSIONAL (.varm)
+============================================================
+No multi-dimensional variable annotations
+
+============================================================
+LAYERS (.layers)
+============================================================
+No layers
+
+============================================================
+OBSERVATIONS PAIRWISE (.obsp)
+============================================================
+No pairwise observation annotations
+
+============================================================
+VARIABLES PAIRWISE (.varp)
+============================================================
+No pairwise variable annotations
+

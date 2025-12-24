@@ -7,7 +7,8 @@ from cell_eval.utils import guess_is_lognorm
 
 
 #data_path = "/home/b5cc/sanjukta.b5cc/metabolic_c1/datasets/obesity_challenge_1.h5ad"
-data_path = "/home/b5cc/sanjukta.b5cc/metabolic_c1/datasets/obesity_challenge_1_local_gtruth.h5ad"
+#data_path = "/home/b5cc/sanjukta.b5cc/metabolic_c1/datasets/obesity_challenge_1_local_gtruth.h5ad"
+data_path = "/home/b5cc/sanjukta.b5cc/metabolic_c1/datasets/test.h5ad"
 
 print(f"Loading data from: {data_path}\n")
 adata = ad.read_h5ad(data_path)
@@ -23,3 +24,4 @@ print(adata.obs.head())
 
 gene_names = adata.obs['gene'].value_counts().index.to_list()
 print(gene_names)
+print(len(gene_names))

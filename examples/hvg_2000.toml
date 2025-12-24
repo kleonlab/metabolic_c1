@@ -1,6 +1,7 @@
 # Dataset paths - maps dataset names to their directories
 [datasets]
-replogle_h1 = "datasets/competition_support_set/{competition_train,k562_gwps,rpe1,jurkat,k562,hepg2}_hvg_2000.h5ad"
+replogle_h1 = "datasets/train.h5ad"
+test_dataset = "datasets/test.h5ad"
 
 # Training specifications
 # All cell types in a dataset automatically go into training (excluding zeroshot/fewshot overrides)
@@ -9,7 +10,7 @@ replogle_h1 = "train"
 
 # Zeroshot specifications - entire cell types go to val or test
 [zeroshot]
-"replogle_h1.hepg2" = "test"
+test_dataset = "test"
 
 
 # Fewshot specifications - explicit perturbation lists

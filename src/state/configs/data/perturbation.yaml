@@ -10,7 +10,7 @@ kwargs:
   n_basal_samples: 1
   basal_mapping_strategy: random
   should_yield_control_cells: true
-  batch_col: gem_group
+  batch_col: null
   pert_col: gene
   cell_type_key: cell_type
   control_pert: DMSO_TF
